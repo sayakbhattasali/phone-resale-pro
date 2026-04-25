@@ -5,6 +5,8 @@ A beginner-friendly Machine Learning project that predicts the **resale price of
 Built with **Python · pandas · scikit-learn · Streamlit**.
 
 ---
+## 🌐 Live Demo
+https://phone-resale-pro-hqpuqumrow8ujppd5rjcuz.streamlit.app/
 
 ## 🚀 Quick Start (3 steps)
 
