@@ -229,13 +229,6 @@ python train_model.py
 ```
 
 ---
-
-
-```md
-![Homepage](images/homepage.png)
-![Prediction](images/result.png)
-```
-
 ---
 
 ## 🔮 Future Improvements
