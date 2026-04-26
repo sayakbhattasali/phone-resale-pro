@@ -1,0 +1,530 @@
+
+brand,model,ram,rom
+Apple,iPhone 17 Pro Max,12,256
+Apple,iPhone 17 Pro Max,12,512
+Apple,iPhone 17 Pro Max,12,1024
+Apple,iPhone 17 Pro,12,256
+Apple,iPhone 17 Pro,12,512
+Apple,iPhone 17 Pro,12,1024
+Apple,iPhone 17 Plus,8,256
+Apple,iPhone 17 Plus,8,512
+Apple,iPhone 17,8,256
+Apple,iPhone 17,8,512
+Apple,iPhone 16 Pro Max,8,256
+Apple,iPhone 16 Pro Max,8,512
+Apple,iPhone 16 Pro Max,8,1024
+Apple,iPhone 16 Pro,8,128
+Apple,iPhone 16 Pro,8,256
+Apple,iPhone 16 Pro,8,512
+Apple,iPhone 16 Plus,8,128
+Apple,iPhone 16 Plus,8,256
+Apple,iPhone 16 Plus,8,512
+Apple,iPhone 16,8,128
+Apple,iPhone 16,8,256
+Apple,iPhone 16,8,512
+Apple,iPhone 15 Pro Max,8,256
+Apple,iPhone 15 Pro Max,8,512
+Apple,iPhone 15 Pro Max,8,1024
+Apple,iPhone 15 Pro,8,128
+Apple,iPhone 15 Pro,8,256
+Apple,iPhone 15 Pro,8,512
+Apple,iPhone 15,6,128
+Apple,iPhone 15,6,256
+Apple,iPhone 15,6,512
+Apple,iPhone 15 Plus,6,128
+Apple,iPhone 15 Plus,6,256
+Apple,iPhone 15 Plus,6,512
+Apple,iPhone 14 Pro Max,6,128
+Apple,iPhone 14 Pro Max,6,256
+Apple,iPhone 14 Pro Max,6,512
+Apple,iPhone 14 Pro Max,6,1024
+Apple,iPhone 14 Pro,6,128
+Apple,iPhone 14 Pro,6,256
+Apple,iPhone 14 Pro,6,512
+Apple,iPhone 14 Pro,6,1024
+Apple,iPhone 14 Plus,6,128
+Apple,iPhone 14 Plus,6,256
+Apple,iPhone 14 Plus,6,512
+Apple,iPhone 14,6,128
+Apple,iPhone 14,6,256
+Apple,iPhone 14,6,512
+Apple,iPhone 13 Pro Max,6,128
+Apple,iPhone 13 Pro Max,6,256
+Apple,iPhone 13 Pro Max,6,512
+Apple,iPhone 13 Pro Max,6,1024
+Apple,iPhone 13 Pro,6,128
+Apple,iPhone 13 Pro,6,256
+Apple,iPhone 13 Pro,6,512
+Apple,iPhone 13 Pro,6,1024
+Apple,iPhone 13 Mini,4,128
+Apple,iPhone 13 Mini,4,256
+Apple,iPhone 13 Mini,4,512
+Apple,iPhone 13,4,128
+Apple,iPhone 13,4,256
+Apple,iPhone 13,4,512
+Apple,iPhone 12 Pro Max,6,128
+Apple,iPhone 12 Pro Max,6,256
+Apple,iPhone 12 Pro Max,6,512
+Apple,iPhone 12 Pro,6,128
+Apple,iPhone 12 Pro,6,256
+Apple,iPhone 12 Pro,6,512
+Apple,iPhone 12 Mini,4,64
+Apple,iPhone 12 Mini,4,128
+Apple,iPhone 12 Mini,4,256
+Apple,iPhone 12,4,64
+Apple,iPhone 12,4,128
+Apple,iPhone 12,4,256
+Apple,iPhone 11 Pro Max,4,64
+Apple,iPhone 11 Pro Max,4,256
+Apple,iPhone 11 Pro Max,4,512
+Apple,iPhone 11 Pro,4,64
+Apple,iPhone 11 Pro,4,256
+Apple,iPhone 11 Pro,4,512
+Apple,iPhone 11,4,64
+Apple,iPhone 11,4,128
+Apple,iPhone 11,4,256
+Apple,iPhone XS Max,4,64
+Apple,iPhone XS Max,4,256
+Apple,iPhone XS Max,4,512
+Apple,iPhone XS,4,64
+Apple,iPhone XS,4,256
+Apple,iPhone XS,4,512
+Apple,iPhone XR,3,64
+Apple,iPhone XR,3,128
+Apple,iPhone XR,3,256
+Apple,iPhone X,3,64
+Apple,iPhone X,3,256
+Apple,iPhone SE 2022,4,64
+Apple,iPhone SE 2022,4,128
+Apple,iPhone SE 2022,4,256
+Apple,iPhone SE 2020,3,64
+Apple,iPhone SE 2020,3,128
+Apple,iPhone SE 2020,3,256
+
+Samsung,Galaxy S24 Ultra,12,256
+Samsung,Galaxy S24 Ultra,12,512
+Samsung,Galaxy S24 Ultra,12,1024
+Samsung,Galaxy S24+,12,256
+Samsung,Galaxy S24+,12,512
+Samsung,Galaxy S24,8,128
+Samsung,Galaxy S24,8,256
+Samsung,Galaxy S23 Ultra,12,256
+Samsung,Galaxy S23 Ultra,12,512
+Samsung,Galaxy S23 Ultra,12,1024
+Samsung,Galaxy S23 FE,8,128
+Samsung,Galaxy S23 FE,8,256
+Samsung,Galaxy S22 Ultra,12,256
+Samsung,Galaxy S22 Ultra,12,512
+Samsung,Galaxy S22 Ultra,12,1024
+Samsung,Galaxy Z Fold 5,12,256
+Samsung,Galaxy Z Fold 5,12,512
+Samsung,Galaxy Z Fold 5,12,1024
+Samsung,Galaxy Z Flip 5,8,256
+Samsung,Galaxy Z Flip 5,8,512
+Samsung,Galaxy A55,8,128
+Samsung,Galaxy A55,8,256
+Samsung,Galaxy A35,8,128
+Samsung,Galaxy A35,8,256
+Samsung,Galaxy M55,8,128
+Samsung,Galaxy M55,8,256
+Samsung,Galaxy F54,8,256
+Samsung,Galaxy Note 20 Ultra,12,256
+Samsung,Galaxy Note 20 Ultra,12,512
+
+Google,Pixel 9 Pro XL,16,256
+Google,Pixel 9 Pro XL,16,512
+Google,Pixel 9,12,128
+Google,Pixel 9,12,256
+Google,Pixel 8 Pro,12,128
+Google,Pixel 8 Pro,12,256
+Google,Pixel 8 Pro,12,512
+Google,Pixel 8,8,128
+Google,Pixel 8,8,256
+Google,Pixel 8a,8,128
+Google,Pixel 8a,8,256
+Google,Pixel 7 Pro,12,128
+Google,Pixel 7 Pro,12,256
+Google,Pixel 7a,8,128
+Google,Pixel 6a,6,128
+
+OnePlus,12,12,256
+OnePlus,12,16,512
+OnePlus,12R,8,128
+OnePlus,12R,16,256
+OnePlus,11,8,128
+OnePlus,11,16,256
+OnePlus,11R,8,128
+OnePlus,11R,16,256
+OnePlus,10 Pro,8,128
+OnePlus,10 Pro,12,256
+OnePlus,Nord 4,8,256
+OnePlus,Nord 4,12,256
+OnePlus,Nord CE 4,8,128
+OnePlus,Nord CE 4,8,256
+OnePlus,Open,16,512
+
+Xiaomi,14 Ultra,16,512
+Xiaomi,14 Ultra,16,1024
+Xiaomi,14,12,256
+Xiaomi,14,12,512
+Xiaomi,13 Pro,12,256
+Xiaomi,13 Pro,12,512
+Xiaomi,Redmi Note 13 Pro+,8,256
+Xiaomi,Redmi Note 13 Pro+,12,256
+Xiaomi,Redmi Note 13 Pro,8,128
+Xiaomi,Redmi Note 13 Pro,8,256
+Xiaomi,Redmi Note 12 Pro,6,128
+Xiaomi,Redmi Note 12 Pro,8,256
+Xiaomi,Poco F6,8,256
+Xiaomi,Poco F6,12,256
+Xiaomi,Poco X6 Pro,8,256
+Xiaomi,Poco X6 Pro,12,512
+Xiaomi,Poco M6 Pro,8,256
+Xiaomi,Poco M6 Pro,12,256
+Xiaomi,Pad 6,8,128
+Xiaomi,Pad 6,8,256
+
+Vivo,X100 Pro,12,256
+Vivo,X100 Pro,16,256
+Vivo,X100 Pro,16,512
+Vivo,X100 Pro,16,1024
+Vivo,X90,8,128
+Vivo,X90,8,256
+Vivo,X90,12,256
+Vivo,X90,12,512
+Vivo,V30 Pro,8,256
+Vivo,V30 Pro,12,512
+Vivo,V29,8,128
+Vivo,V29,8,256
+Vivo,V29,12,256
+Vivo,T3,8,128
+Vivo,T3,8,256
+Vivo,Y200,8,128
+Vivo,Y200,8,256
+
+Oppo,Find X7 Ultra,12,256
+Oppo,Find X7 Ultra,16,256
+Oppo,Find X7 Ultra,16,512
+Oppo,Find X7 Ultra,16,1024
+Oppo,Reno 11 Pro,12,256
+Oppo,Reno 11 Pro,12,512
+Oppo,F25 Pro,8,128
+Oppo,F25 Pro,8,256
+Oppo,F25 Pro,12,256
+Oppo,A79,8,128
+Oppo,A79,8,256
+
+Realme,GT 6T,8,128
+Realme,GT 6T,8,256
+Realme,GT 6T,12,256
+Realme,GT 6T,12,512
+Realme,12 Pro+,8,128
+Realme,12 Pro+,8,256
+Realme,12 Pro+,12,256
+Realme,11 Pro,8,128
+Realme,11 Pro,8,256
+Realme,11 Pro,12,256
+Realme,Narzo 70 Pro,8,128
+Realme,Narzo 70 Pro,8,256
+
+Motorola,Edge 50 Ultra,12,512
+Motorola,Edge 50 Ultra,16,1024
+Motorola,Edge 50 Pro,8,256
+Motorola,Edge 50 Pro,12,256
+Motorola,Razr 40 Ultra,8,256
+Motorola,Razr 40 Ultra,12,512
+Motorola,G85,8,128
+Motorola,G85,8,256
+Motorola,G85,12,256
+
+Nothing,Phone 2,8,128
+Nothing,Phone 2,8,256
+Nothing,Phone 2,12,256
+Nothing,Phone 2,12,512
+Nothing,Phone 1,8,128
+Nothing,Phone 1,8,256
+Nothing,Phone 1,12,256
+Nothing,Phone 2a,8,128
+Nothing,Phone 2a,8,256
+Nothing,Phone 2a,12,256
+
+IQOO,12,12,256
+IQOO,12,16,512
+IQOO,Neo 9 Pro,8,128
+IQOO,Neo 9 Pro,8,256
+IQOO,Neo 9 Pro,12,256
+IQOO,Z9,8,128
+IQOO,Z9,8,256
+
+Nokia,G42 5G,4,128
+Nokia,G42 5G,6,128
+Nokia,G42 5G,8,128
+Nokia,G42 5G,8,256
+Nokia,X30,6,128
+Nokia,X30,8,256
+Nokia,G21,3,64
+Nokia,G21,4,64
+Nokia,G21,4,128
+Nokia,G21,6,128
+
+Xiaomi,Poco F5,8,256
+Xiaomi,Poco F5,12,256
+Xiaomi,Poco F5 Pro,8,256
+Xiaomi,Poco F5 Pro,12,256
+Xiaomi,Poco F5 Pro,12,512
+Xiaomi,Poco F4,6,128
+Xiaomi,Poco F4,8,128
+Xiaomi,Poco F4,12,256
+Xiaomi,Poco X5 Pro,6,128
+Xiaomi,Poco X5 Pro,8,256
+Xiaomi,Poco X5,6,128
+Xiaomi,Poco X5,8,256
+Xiaomi,Poco X4 Pro,6,128
+Xiaomi,Poco X4 Pro,8,256
+Xiaomi,Poco M5,4,64
+Xiaomi,Poco M5,6,128
+Xiaomi,Poco M4 Pro,6,128
+Xiaomi,Poco M4 Pro,8,128
+Xiaomi,Redmi Note 12,4,128
+Xiaomi,Redmi Note 12,6,128
+Xiaomi,Redmi Note 12,8,256
+Xiaomi,Redmi Note 12 5G,4,128
+Xiaomi,Redmi Note 12 5G,6,128
+Xiaomi,Redmi Note 12 5G,8,256
+Xiaomi,Redmi Note 12 Pro+,8,256
+Xiaomi,Redmi Note 12 Pro+,12,256
+Xiaomi,Redmi Note 11 Pro+,6,128
+Xiaomi,Redmi Note 11 Pro+,8,128
+Xiaomi,Redmi Note 11 Pro+,8,256
+Xiaomi,Redmi Note 11 Pro,6,128
+Xiaomi,Redmi Note 11 Pro,8,128
+Xiaomi,Redmi Note 10 Pro,6,128
+Xiaomi,Redmi Note 10 Pro,8,128
+Xiaomi,Redmi 13C,4,128
+Xiaomi,Redmi 13C,6,128
+Xiaomi,Redmi 13C,8,256
+Xiaomi,Redmi 12,4,128
+Xiaomi,Redmi 12,6,128
+Xiaomi,Redmi 12,8,256
+Xiaomi,Redmi 11 Prime,4,64
+Xiaomi,Redmi 11 Prime,6,128
+Xiaomi,Xiaomi 12 Pro,8,256
+Xiaomi,Xiaomi 12 Pro,12,256
+Xiaomi,Xiaomi 12 Pro,12,512
+Xiaomi,Xiaomi 12,8,128
+Xiaomi,Xiaomi 12,8,256
+Xiaomi,Xiaomi 11T Pro,8,128
+Xiaomi,Xiaomi 11T Pro,8,256
+Xiaomi,Xiaomi Pad 5,6,128
+Xiaomi,Xiaomi Pad 5,6,256
+
+OnePlus,OnePlus Nord 3,8,128
+OnePlus,OnePlus Nord 3,8,256
+OnePlus,OnePlus Nord 3,16,256
+OnePlus,OnePlus Nord CE 3,8,128
+OnePlus,OnePlus Nord CE 3,8,256
+OnePlus,OnePlus Nord CE 3 Lite,8,128
+OnePlus,OnePlus Nord CE 3 Lite,8,256
+OnePlus,OnePlus Nord 2T,8,128
+OnePlus,OnePlus Nord 2T,12,256
+OnePlus,OnePlus Nord 2,8,128
+OnePlus,OnePlus Nord 2,12,256
+OnePlus,OnePlus Nord CE 2,6,128
+OnePlus,OnePlus Nord CE 2,8,128
+OnePlus,OnePlus Nord CE 2 Lite,6,128
+OnePlus,OnePlus Nord CE 2 Lite,8,128
+OnePlus,OnePlus 10R,8,128
+OnePlus,OnePlus 10R,12,256
+OnePlus,OnePlus 10 Pro,8,128
+OnePlus,OnePlus 10 Pro,12,256
+OnePlus,OnePlus 9 Pro,8,128
+OnePlus,OnePlus 9 Pro,12,256
+OnePlus,OnePlus 9,8,128
+OnePlus,OnePlus 9,12,256
+OnePlus,OnePlus 9R,8,128
+OnePlus,OnePlus 9R,12,256
+OnePlus,OnePlus 8T,8,128
+OnePlus,OnePlus 8T,12,256
+OnePlus,OnePlus 8 Pro,8,128
+OnePlus,OnePlus 8 Pro,12,256
+OnePlus,OnePlus Open,16,512
+OnePlus,OnePlus Open,16,1024
+
+Vivo,X100,12,256
+Vivo,X100,16,512
+Vivo,X100,16,1024
+Vivo,X90 Pro,12,256
+Vivo,X90 Pro,12,512
+Vivo,X80,8,128
+Vivo,X80,12,256
+Vivo,V29 Pro,8,256
+Vivo,V29 Pro,12,256
+Vivo,V27 Pro,8,128
+Vivo,V27 Pro,8,256
+Vivo,V27,8,128
+Vivo,V27,12,256
+Vivo,V25 Pro,8,128
+Vivo,V25 Pro,12,256
+Vivo,T2 Pro,8,128
+Vivo,T2 Pro,8,256
+Vivo,T2,6,128
+Vivo,T2,8,128
+Vivo,T1 Pro,6,128
+Vivo,T1 Pro,8,128
+Vivo,Y100,8,128
+Vivo,Y100,8,256
+Vivo,Y56,4,128
+Vivo,Y56,8,128
+Vivo,Y36,8,128
+Vivo,Y36,8,256
+Vivo,Y28,6,128
+Vivo,Y28,8,128
+Vivo,Y22,4,64
+Vivo,Y22,6,128
+
+Realme,GT 5 Pro,12,256
+Realme,GT 5 Pro,16,512
+Realme,GT Neo 3,8,128
+Realme,GT Neo 3,12,256
+Realme,GT Neo 3T,6,128
+Realme,GT Neo 3T,8,256
+Realme,GT 2 Pro,8,128
+Realme,GT 2 Pro,12,256
+Realme,13 Pro+,8,256
+Realme,13 Pro+,12,512
+Realme,13 Pro,8,128
+Realme,13 Pro,8,256
+Realme,12+,8,128
+Realme,12+,8,256
+Realme,11x,6,128
+Realme,11x,8,128
+Realme,Narzo 60 Pro,8,128
+Realme,Narzo 60 Pro,12,256
+Realme,Narzo N65,4,128
+Realme,Narzo N65,6,128
+Realme,C67,6,128
+Realme,C67,8,128
+Realme,C55,6,64
+Realme,C55,8,128
+Realme,P1 Pro,8,128
+Realme,P1 Pro,8,256
+Realme,P1,6,128
+Realme,P1,8,128
+
+Motorola,Edge 40,8,256
+Motorola,Edge 40 Neo,8,128
+Motorola,Edge 40 Neo,12,256
+Motorola,Edge 30 Ultra,8,128
+Motorola,Edge 30 Ultra,12,256
+Motorola,Edge 30 Fusion,8,128
+Motorola,Edge 30 Fusion,12,256
+Motorola,Edge 30,8,128
+Motorola,Edge 30,8,256
+Motorola,G84,8,256
+Motorola,G84,12,256
+Motorola,G54,8,128
+Motorola,G54,12,256
+Motorola,G73,8,128
+Motorola,G62,6,128
+Motorola,G52,6,128
+Motorola,Razr 50 Ultra,12,512
+Motorola,Razr 50,8,256
+
+Oppo,Find X6 Pro,12,256
+Oppo,Find X6 Pro,16,512
+Oppo,Find X6,12,256
+Oppo,Find N3,12,512
+Oppo,Find N3,16,1024
+Oppo,Reno 12 Pro,12,256
+Oppo,Reno 12,8,256
+Oppo,Reno 10 Pro+,12,256
+Oppo,Reno 10 Pro,12,256
+Oppo,Reno 8 Pro,12,256
+Oppo,F27 Pro+,8,256
+Oppo,F25,8,128
+Oppo,F23,8,256
+Oppo,A78,8,128
+Oppo,A59,6,128
+Oppo,A3 Pro,8,128
+Oppo,A3 Pro,8,256
+Oppo,A38,4,128
+
+Nothing,Phone 3,12,256
+Nothing,Phone 3,12,512
+Nothing,Phone 3,16,512
+Nothing,Phone 3a,8,128
+Nothing,Phone 3a,8,256
+Nothing,Phone 3a Pro,12,256
+Nothing,CMF Phone 1,6,128
+Nothing,CMF Phone 1,8,128
+Nothing,CMF Phone 1,8,256
+Nothing,CMF Phone 2,8,128
+Nothing,CMF Phone 2,8,256
+Nothing,Phone 2,8,128
+Nothing,Phone 2,12,256
+Nothing,Phone 2,12,512
+Nothing,Phone 1,8,128
+Nothing,Phone 1,8,256
+Nothing,Phone 1,12,256
+Nothing,Phone 2a,8,128
+Nothing,Phone 2a,8,256
+Nothing,Phone 2a,12,256
+
+IQOO,11,8,256
+IQOO,11,16,256
+IQOO,11 Legend,16,512
+IQOO,Neo 7 Pro,8,128
+IQOO,Neo 7 Pro,12,256
+IQOO,Neo 7,8,128
+IQOO,Neo 7,12,256
+IQOO,Neo 10 Pro,12,256
+IQOO,Neo 10 Pro,16,512
+IQOO,Z7 Pro,8,128
+IQOO,Z7 Pro,8,256
+IQOO,Z7,6,128
+IQOO,Z7,8,128
+IQOO,Z6 Pro,6,128
+IQOO,Z6 Pro,8,128
+IQOO,Z6 Lite,4,64
+IQOO,Z6 Lite,6,128
+IQOO,Z5,8,128
+IQOO,Z5,12,256
+
+Google,Pixel 9 Pro,16,256
+Google,Pixel 9 Pro,16,512
+Google,Pixel 9 Pro Fold,16,256
+Google,Pixel 9 Pro Fold,16,512
+Google,Pixel Fold,12,256
+Google,Pixel Fold,12,512
+Google,Pixel 7,8,128
+Google,Pixel 7,8,256
+Google,Pixel 7 Pro,12,512
+Google,Pixel 6,8,128
+Google,Pixel 6,8,256
+Google,Pixel 6 Pro,12,128
+Google,Pixel 6 Pro,12,256
+Google,Pixel 5,8,128
+Google,Pixel 5a,6,128
+Google,Pixel 4 XL,6,64
+Google,Pixel 4 XL,6,128
+Google,Pixel 4a,6,128
+
+Nokia,XR21,6,128
+Nokia,XR21,8,256
+Nokia,G60,6,128
+Nokia,G60,8,128
+Nokia,G50,4,64
+Nokia,G50,6,128
+Nokia,G400,4,64
+Nokia,G400,6,128
+Nokia,C32,4,64
+Nokia,C32,4,128
+Nokia,C32,6,128
+Nokia,XR20,6,128
+Nokia,XR20,8,128
+Nokia,X20,6,128
+Nokia,X20,8,128
+Nokia,G11 Plus,4,64
+Nokia,G11 Plus,4,128
+Nokia,C22,2,64
+Nokia,C22,4,64

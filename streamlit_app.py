@@ -445,7 +445,7 @@ color: #a78bfa;
 <div class="feature-item" style="transition-delay: 0.2s;">
 <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg></div>
 <div>
-<div style="font-weight: 600; font-size: 0.95rem;">10,000+ Records</div>
+<div style="font-weight: 600; font-size: 0.95rem;">5,000+ Records</div>
 <div style="font-size: 0.75rem; opacity: 0.4;">Deep Indian Market Insights</div>
 </div>
 </div>
@@ -557,8 +557,14 @@ def create_styled_chart(months, prices):
 # ── Load artifacts & Data ──────────────────────────────────────────────────────
 try:
     model_obj, encoders = load_artifacts()
-    data_path = os.path.join(os.path.dirname(__file__), "data", "used_phones_final.csv")
+    data_path = os.path.join(os.path.dirname(__file__), "data", "used_phones_clean.csv")
     df_raw = pd.read_csv(data_path)
+    variants_path = os.path.join(os.path.dirname(__file__), "data", "phone_variants.csv")
+    variants_df = pd.read_csv(variants_path)
+    # Robust normalization: remove spaces and handle case-insensitive lookups later
+    variants_df["brand_clean"] = variants_df["brand"].astype(str).str.strip().str.lower()
+    variants_df["model_clean"] = variants_df["model"].astype(str).str.strip().str.lower()
+
     
     brand_model_map = df_raw.groupby('brand')['model'].unique().apply(list).to_dict()
     model_price_map = df_raw.set_index('model')['launch_price'].to_dict()
@@ -601,7 +607,7 @@ Smart AI price estimates for every used phone's true market value.
 
 <!-- Stats Configuration (PC Scale) -->
 <div class="hero-stats" style="margin-top: 5px;">
-<div class="hero-stat"><span class="hero-stat-val">10K+</span><span class="hero-stat-lbl">Records</span></div>
+<div class="hero-stat"><span class="hero-stat-val">5K+</span><span class="hero-stat-lbl">Records</span></div>
 <div class="hero-stat"><span class="hero-stat-val">50+</span><span class="hero-stat-lbl">Brands</span></div>
 <div class="hero-stat"><span class="hero-stat-val">98%</span><span class="hero-stat-lbl">Accuracy</span></div>
 </div>
@@ -823,7 +829,7 @@ Pro
 <p class="hero-sub">Smart AI price estimates for every used phone's true market value.</p>
 <div class="hero-stats">
 <div class="hero-stat">
-<span class="hero-stat-val">10K+</span>
+<span class="hero-stat-val">5K+</span>
 <span class="hero-stat-lbl">Records</span>
 </div>
 <div class="hero-stat">
@@ -863,8 +869,41 @@ with main_col1:
         
         c1, c2 = st.columns(2)
         with c1:
-            ram = st.selectbox("RAM (GB)", options=[2, 3, 4, 6, 8, 12, 16, 24], index=3)
-            storage = st.selectbox("Storage (GB)", options=[32, 64, 128, 256, 512, 1024], index=2)
+            brand_clean = brand.strip().lower()
+            model_name_clean = model_name.strip().lower()
+
+            def is_match(csv_model):
+                csv_model = str(csv_model)
+                if csv_model == model_name_clean: return True
+                if (brand_clean + " " + csv_model) == model_name_clean: return True
+                if brand_clean == "motorola" and ("moto " + csv_model) == model_name_clean: return True
+                return False
+
+            model_variants = variants_df[
+                (variants_df["brand_clean"] == brand_clean) &
+                (variants_df["model_clean"].apply(is_match))
+            ]
+
+
+
+            ram_options = sorted(model_variants["ram"].unique()) if not model_variants.empty else [2, 4, 6, 8, 12, 16]
+
+            ram = st.selectbox(
+                "RAM (GB)",
+                options=ram_options
+            )
+
+            storage_options = sorted(
+                model_variants[
+                    model_variants["ram"] == ram
+                ]["rom"].unique()
+            ) if not model_variants.empty else [32, 64, 128, 256, 512]
+
+            storage = st.selectbox(
+                "Storage (GB)",
+                options=storage_options
+            )
+
         with c2:
             age_months = st.slider("Phone Age (Months)", 1, 60, 12)
             battery = st.slider("Battery Health %", 50, 100, 90)
@@ -942,7 +981,7 @@ Suggested Range: <b>₹{low:,.0f} - ₹{high:,.0f}</b>
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="footer">
-Phone Resale Pro v1.0 • Smart Estimates Powered by 10K+ Market Records •
+Phone Resale Pro v1.0 • Smart Estimates Powered by 5K+ Market Records •
 Built by Sayak Bhattasali •
 <a href="https://github.com/sayakbhattasali" target="_blank">GitHub</a>
 </div>

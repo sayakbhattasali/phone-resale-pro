@@ -1,112 +1,182 @@
-# 📱 Used Phone Price Predictor
+````md
+# 📱 Phone Resale Pro
 
-A beginner-friendly Machine Learning project that predicts the **resale price of a used smartphone in INR** based on its specs and condition.
+> AI-powered smartphone resale valuation platform that estimates the fair market price of used phones in INR based on specifications, condition, battery health, and age.
 
-Built with **Python · pandas · scikit-learn · Streamlit**.
+Built with **Python • pandas • scikit-learn • Streamlit**
 
 ---
 ## 🌐 Live Demo
 https://phone-resale-pro-hqpuqumrow8ujppd5rjcuz.streamlit.app/
 
-## 🚀 Quick Start (3 steps)
+## ✨ Overview
 
-### 1. Clone / download the project
+Phone Resale Pro helps users estimate the resale value of used smartphones using Machine Learning.  
+Instead of guessing prices manually, the app analyzes multiple real-world factors and generates an intelligent market estimate instantly.
 
-```bash
-git clone <your-repo-url>
-cd used-phone-price-predictor
-```
+### Key Highlights
 
-### 2. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the app
-
-```bash
-streamlit run app/streamlit_app.py
-```
-
-> **That's it!** The app auto-trains the model on first launch. No extra steps needed.
+- 📊 Smart resale price prediction
+- 📱 Supports multiple brands & models
+- 🔋 Battery health + age based valuation
+- 📈 Lifecycle depreciation forecast
+- 🎯 Clean premium web interface
+- ⚡ Instant predictions with Streamlit
 
 ---
 
-## 📁 Project Structure
+## 🚀 Live Features
 
-```
-used-phone-price-predictor/
+- Fair market value estimate  
+- Suggested listing price range  
+- Retention percentage vs launch price  
+- Future depreciation forecast chart  
+- Mobile responsive UI  
+- Real product image fetching  
+
+---
+
+## 🧠 How It Works
+
+```text
+User Input → Data Processing → ML Model Prediction → Price Estimate → Insights Dashboard
+````
+
+### Prediction Factors Used
+
+| Factor           | Description                    |
+| ---------------- | ------------------------------ |
+| Brand            | Apple, Samsung, Xiaomi, etc.   |
+| Model            | Specific smartphone model      |
+| RAM              | Device RAM in GB               |
+| Storage          | Internal storage               |
+| Age              | Phone age in months            |
+| Battery Health   | Current battery condition      |
+| Visual Condition | Excellent / Good / Fair / Poor |
+| Launch Price     | Original retail price          |
+
+---
+
+## 🛠 Tech Stack
+
+| Category      | Tools                   |
+| ------------- | ----------------------- |
+| Language      | Python                  |
+| Data Handling | pandas                  |
+| ML Model      | scikit-learn            |
+| UI            | Streamlit               |
+| Charts        | Plotly                  |
+| Deployment    | Streamlit Cloud / Local |
+
+---
+
+## 📂 Project Structure
+
+```text
+Phone-Resale-Pro/
 │
 ├── data/
-│   └── sample_phones.csv       # 80+ sample phone records
+│   └── used_phones_clean.csv
 │
-├── src/
-│   ├── train_model.py          # Trains & saves the ML model
-│   └── predict.py              # Loads model, runs predictions
+├── model/
+│   ├── model.pkl
+│   └── encoders.pkl
 │
-├── app/
-│   └── streamlit_app.py        # Web UI (run this!)
-│
-├── model/                      # Auto-created after first run
-│   ├── model.pkl               # Saved Random Forest model
-│   └── encoders.pkl            # Saved label encoders
-│
+├── predict.py
+├── train_model.py
+├── streamlit_app.py
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 🧠 How It Works
+## ⚡ Installation & Run
 
-| Step | What happens |
-|------|-------------|
-| 1 | User fills in phone details in the web form |
-| 2 | App passes the inputs to `predict.py` |
-| 3 | `predict.py` encodes the inputs and feeds them to the saved model |
-| 4 | The **Random Forest Regressor** outputs an estimated price |
-| 5 | App shows the price + a useful tip |
-
----
-
-## 🎛️ Input Features
-
-| Feature | Description |
-|---------|-------------|
-| Brand | Phone manufacturer (Samsung, Apple, OnePlus, etc.) |
-| RAM | RAM in GB |
-| Storage | Internal storage in GB |
-| Age | How old the phone is (months) |
-| Battery Health | Battery health percentage (50–100%) |
-| Condition | Excellent / Good / Fair / Poor |
-
----
-
-## 🔁 Retraining the Model
-
-To retrain manually (e.g., after adding more data to the CSV):
+### 1️⃣ Clone Repository
 
 ```bash
-python src/train_model.py
+git clone https://github.com/sayakbhattasali/phone-resale-pro.git
+cd phone-resale-pro
+```
+
+### 2️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3️⃣ Launch App
+
+```bash
+streamlit run streamlit_app.py
 ```
 
 ---
 
-## 💡 Learning Concepts Covered
+## 📈 Model Pipeline
 
-- **Data loading** with `pandas`
-- **Label encoding** for categorical features
-- **Train/test split** with `sklearn`
-- **Random Forest Regression**
-- **Model evaluation** (MAE, R²)
-- **Model persistence** with `joblib`
-- **Web UI** with `Streamlit`
+```text
+Dataset → Cleaning → Encoding → Train/Test Split →
+Random Forest Regressor → Evaluation → Deployment
+```
+
+### Evaluation Metrics
+
+* MAE (Mean Absolute Error)
+* R² Score
+* Prediction Stability
 
 ---
 
-## 📝 Notes
+## 🔁 Retrain Model
 
-- The dataset is a sample (~80 records) for demonstration purposes.
-- Predicted prices are estimates and should not be used for actual transactions.
-- To improve accuracy, add more real-world data to `data/sample_phones.csv`.
+If dataset is updated:
+
+```bash
+python train_model.py
+```
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots here for better GitHub presentation.
+
+```md
+![Homepage](images/homepage.png)
+![Prediction Result](images/result.png)
+```
+
+---
+
+## 💡 Future Improvements
+
+* Live OLX / Cashify market scraping
+* Confidence score prediction
+* User login & saved history
+* Compare two phones resale value
+* Explainable AI pricing breakdown
+
+---
+
+## ⚠ Disclaimer
+
+Predicted prices are estimated values based on available training data and should be used for informational purposes only.
+
+---
+
+## 👨‍💻 Author
+
+**Sayak Bhattasali**
+
+* GitHub: [https://github.com/sayakbhattasali](https://github.com/sayakbhattasali)
+
+---
+
+## ⭐ Support
+
+If you liked this project, consider starring the repository.
+
+```
+```
