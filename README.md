@@ -230,9 +230,6 @@ python train_model.py
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots for stronger GitHub presentation.
 
 ```md
 ![Homepage](images/homepage.png)
