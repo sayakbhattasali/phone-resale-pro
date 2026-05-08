@@ -1125,7 +1125,7 @@ Suggested Range: <b>₹ {low:,.0f} - ₹ {high:,.0f}</b>
 
             res1, res2 = st.columns([1, 1.8])
             with res1:
-                query = f"{brand} {model_name} back of smartphone photo"
+                query = f"{brand} {model_name} gsmarena official image"
                 img_url = fetch_phone_image(query)
                 if img_url:
                     st.markdown(
