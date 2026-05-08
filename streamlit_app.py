@@ -22,7 +22,13 @@ from ddgs import DDGS
 # Make sure src/ is importable from anywhere
 sys.path.insert(0, os.path.dirname(__file__))
 
-from predict import load_artifacts, predict_price, get_known_brands, get_known_conditions, get_known_models
+from predict import (
+    load_artifacts,
+    predict_price,
+    get_known_brands,
+    get_known_conditions,
+    get_known_models,
+)
 
 # ── Load API key from .env ─────────────────────────────────────────────────────
 load_dotenv()
@@ -33,18 +39,27 @@ st.set_page_config(page_title="Phone Resale Pro", page_icon="📱", layout="wide
 
 # ── Custom Premium CSS ────────────────────────────────────────────────────────
 try:
-    with open(os.path.join(os.path.dirname(__file__), "assets", "minimal_nebula.png"), "rb") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "assets", "minimal_nebula.png"), "rb"
+    ) as f:
         nebula_b64 = base64.b64encode(f.read()).decode()
-    with open(os.path.join(os.path.dirname(__file__), "assets", "flagship_transparent.png"), "rb") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "assets", "flagship_transparent.png"),
+        "rb",
+    ) as f:
         samsung_b64 = base64.b64encode(f.read()).decode()
-    with open(os.path.join(os.path.dirname(__file__), "assets", "iphone_wa_transparent.png"), "rb") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "assets", "iphone_wa_transparent.png"),
+        "rb",
+    ) as f:
         iphone_b64 = base64.b64encode(f.read()).decode()
 except Exception:
     nebula_b64 = ""
     samsung_b64 = ""
     iphone_b64 = ""
 
-st.markdown(f"""
+st.markdown(
+    f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@700&display=swap');
 
@@ -97,16 +112,69 @@ st.markdown(f"""
 
     /* Premium Input Styling */
     div[data-testid="stSelectbox"] > div {{
-        background-color: #0f172a !important;
-        border: 1px solid #334155 !important;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(15, 23, 42, 0.96) 35%, rgba(15, 23, 42, 0.98)) !important;
+        border: 1px solid rgba(51, 65, 85, 0.95) !important;
         border-radius: 12px !important;
         transition: all 0.2s ease !important;
         height: 52px !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important,
+            inset 0 -1px 2px rgba(0, 0, 0, 0.18) !important,
+            0 10px 30px rgba(15, 23, 42, 0.25) !important;
+        backdrop-filter: blur(8px) !important;
     }}
 
     div[data-testid="stSelectbox"] > div:focus-within {{
         border-color: #8b5cf6 !important;
-        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important,
+            inset 0 -1px 2px rgba(0, 0, 0, 0.24) !important,
+            0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    }}
+
+    [data-testid="stPopover"] > div {{
+        background-color: rgba(15, 23, 42, 0.95) !important;
+        border: 1px solid rgba(51, 65, 85, 0.95) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35) !important;
+        backdrop-filter: blur(18px) !important;
+        color: #e2e8f0 !important;
+    }}
+
+    [data-testid="stPopover"] button {{
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.98) 38%, rgba(15, 23, 42, 0.96)) !important;
+        border: 1px solid rgba(51, 65, 85, 0.95) !important;
+        border-radius: 12px !important;
+        color: #e2e8f0 !important;
+        min-height: 52px !important;
+        padding: 0 1rem !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.95rem !important;
+        font-weight: 400 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important,
+            inset 0 -1px 2px rgba(0, 0, 0, 0.2) !important,
+            0 10px 30px rgba(15, 23, 42, 0.35) !important;
+        transition: all 0.2s ease !important;
+        backdrop-filter: blur(8px) !important;
+    }}
+
+    [data-testid="stPopover"] button:hover,
+    [data-testid="stPopover"] button:focus {{
+        border-color: #8b5cf6 !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important,
+            inset 0 -1px 2px rgba(0, 0, 0, 0.24) !important,
+            0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+        outline: none !important;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(15, 23, 42, 1) 42%, rgba(15, 23, 42, 0.98)) !important;
+    }}
+
+    [data-testid="stPopover"] button > div {{
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
     }}
 
     /* Slider Overhaul */
@@ -325,9 +393,12 @@ st.markdown(f"""
         .iphone-overlay {{ top: 25px; right: 200px; height: 260px; }}
     }}
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-st.markdown(f"""
+st.markdown(
+    f"""
 <style>
 .drawer-btn {{
 position: fixed;
@@ -493,7 +564,9 @@ color: #a78bfa;
 </div>
 </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # ── Utilities ──────────────────────────────────────────────────────────────────
@@ -503,53 +576,62 @@ def fetch_phone_image(query):
         ddgs = DDGS()
         results = ddgs.images(f"{query} phone official smartphone", max_results=3)
         if results:
-            return results[0]['image']
+            return results[0]["image"]
     except Exception:
         pass
     return None
+
 
 def create_styled_chart(months, prices):
     """Create a premium, futuristic Plotly line chart."""
     fig = go.Figure()
 
     # Add the primary line with a subtle glow effect (overlapping lines)
-    fig.add_trace(go.Scatter(
-        x=months, y=prices,
-        mode='lines+markers',
-        line=dict(color='#60a5fa', width=5, shape='spline'),
-        marker=dict(size=10, color='#1e293b', line=dict(width=2, color='#60a5fa')),
-        hoverinfo='text',
-        text=[f"Month {m}: ₹{p:,.0f}" for m, p in zip(months, prices)],
-        name="Value Forecast"
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=months,
+            y=prices,
+            mode="lines+markers",
+            line=dict(color="#60a5fa", width=5, shape="spline"),
+            marker=dict(size=10, color="#1e293b", line=dict(width=2, color="#60a5fa")),
+            hoverinfo="text",
+            text=[f"Month {m}: ₹ {p:,.0f}" for m, p in zip(months, prices)],
+            name="Value Forecast",
+        )
+    )
 
     # Add a glowing overlay line
-    fig.add_trace(go.Scatter(
-        x=months, y=prices,
-        mode='lines',
-        line=dict(color='rgba(96, 165, 250, 0.3)', width=12, shape='spline'),
-        hoverinfo='skip'
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=months,
+            y=prices,
+            mode="lines",
+            line=dict(color="rgba(96, 165, 250, 0.3)", width=12, shape="spline"),
+            hoverinfo="skip",
+        )
+    )
 
     fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         margin=dict(l=0, r=0, t=20, b=0),
         showlegend=False,
         height=300,
         xaxis=dict(
-            showgrid=True, gridcolor='#334155',
-            tickfont=dict(color='#94a3b8'),
-            title=dict(text="Months", font=dict(color='#64748b', size=12))
+            showgrid=True,
+            gridcolor="#334155",
+            tickfont=dict(color="#94a3b8"),
+            title=dict(text="Months", font=dict(color="#64748b", size=12)),
         ),
         yaxis=dict(
-            showgrid=True, gridcolor='#334155',
-            tickfont=dict(color='#94a3b8'),
-            tickprefix="₹",
-            title=dict(text="Estimated Value", font=dict(color='#64748b', size=12))
+            showgrid=True,
+            gridcolor="#334155",
+            tickfont=dict(color="#94a3b8"),
+            tickprefix="₹ ",
+            title=dict(text="Estimated Value", font=dict(color="#64748b", size=12)),
         ),
         hovermode="x unified",
-        hoverlabel=dict(bgcolor="#1e293b", font_size=13, font_family="Outfit")
+        hoverlabel=dict(bgcolor="#1e293b", font_size=13, font_family="Outfit"),
     )
     return fig
 
@@ -559,26 +641,38 @@ try:
     model_obj, encoders = load_artifacts()
     data_path = os.path.join(os.path.dirname(__file__), "data", "used_phones_clean.csv")
     df_raw = pd.read_csv(data_path)
-    variants_path = os.path.join(os.path.dirname(__file__), "data", "phone_variants.csv")
+    variants_path = os.path.join(
+        os.path.dirname(__file__), "data", "phone_variants.csv"
+    )
     variants_df = pd.read_csv(variants_path)
     # Robust normalization: remove spaces and handle case-insensitive lookups later
-    variants_df["brand_clean"] = variants_df["brand"].astype(str).str.strip().str.lower()
-    variants_df["model_clean"] = variants_df["model"].astype(str).str.strip().str.lower()
+    variants_df["brand_clean"] = (
+        variants_df["brand"].astype(str).str.strip().str.lower()
+    )
+    variants_df["model_clean"] = (
+        variants_df["model"].astype(str).str.strip().str.lower()
+    )
 
-    
-    brand_model_map = df_raw.groupby('brand')['model'].unique().apply(list).to_dict()
-    model_price_map = df_raw.set_index('model')['launch_price'].to_dict()
+    brand_model_map = (
+        variants_df.groupby("brand")["model"].unique().apply(list).to_dict()
+    )
 
-    brands     = sorted(brand_model_map.keys())
-    conditions = sorted(get_known_conditions(encoders),
-                        key=lambda x: ["Excellent","Good","Fair","Poor"].index(x))
+    brands = sorted(brand_model_map.keys())
+
+    # Keep launch prices from training data
+    model_price_map = df_raw.groupby("model")["launch_price"].median().to_dict()
+    conditions = sorted(
+        get_known_conditions(encoders),
+        key=lambda x: ["Excellent", "Good", "Fair", "Poor"].index(x),
+    )
 except Exception as e:
     st.error(f"System Error: {e}")
     st.stop()
 
 
 # ── Hero Section ──────────────────────────────────────────────────────────────────
-st.markdown(f"""
+st.markdown(
+    f"""
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <div class="hero-container fade-in hidden lg:block">
 <div class="hero-glass-card" style="background-color: rgba(10, 15, 25, 0.4); background-image: url(data:image/jpeg;base64,{{nebula_b64}}); background-size: cover; background-position: center; background-blend-mode: overlay;">
@@ -853,64 +947,119 @@ Pro
 
 </div>
 
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
+
+
+def mobile_selector(label, options, key):
+    if key not in st.session_state or st.session_state[key] is None:
+        st.session_state[key] = options[0] if options else ""
+
+    selected = str(st.session_state[key] or "")
+
+    st.markdown(
+        f"<p style=\"font-family: 'Outfit', sans-serif; font-weight: 400; color: #94a3b8; font-size: 0.95rem; letter-spacing: 0.025em; margin-bottom: 0.5rem;\">{label}</p>",
+        unsafe_allow_html=True,
+    )
+
+    with st.popover(selected, use_container_width=True):
+        search_enabled = st.toggle("🔎 Search", key=f"{key}_search_toggle")
+
+        if search_enabled:
+            query = st.text_input("Type to search", key=f"{key}_search_input")
+            filtered_options = [
+                opt for opt in options if query.lower() in str(opt).lower()
+            ]
+        else:
+            filtered_options = options
+
+        for option_index, opt in enumerate(filtered_options):
+            button_key = f"{key}_option_{option_index}"
+            if st.button(str(opt), key=button_key, use_container_width=True):
+                st.session_state[key] = opt
+                st.rerun()
+
+    return st.session_state[key]
+
 
 # ── Main Layout ───────────────────────────────────────────────────────────────
 main_col1, main_col2 = st.columns([1, 1.2], gap="large")
 
 with main_col1:
-    brand = st.selectbox("📌 Select Brand", options=brands)
-    
+
+    brand = mobile_selector("📌 Select Brand", brands, "selected_brand")
+    brand = str(brand or "")
+
+    brand_models = sorted(brand_model_map.get(brand, []))
+
+    if st.session_state.get("last_brand") != brand:
+        st.session_state["selected_model"] = brand_models[0] if brand_models else ""
+        st.session_state["last_brand"] = brand
+
     with st.container():
+
         st.subheader("📱 Device Configuration")
-        
-        brand_models = sorted(brand_model_map.get(brand, []))
-        model_name = st.selectbox("Specific Model", options=brand_models)
-        
+
+        model_name = mobile_selector("Specific Model", brand_models, "selected_model")
+        model_name = str(model_name or "")
+
         c1, c2 = st.columns(2)
+
         with c1:
+
             brand_clean = brand.strip().lower()
             model_name_clean = model_name.strip().lower()
 
             def is_match(csv_model):
                 csv_model = str(csv_model)
-                if csv_model == model_name_clean: return True
-                if (brand_clean + " " + csv_model) == model_name_clean: return True
-                if brand_clean == "motorola" and ("moto " + csv_model) == model_name_clean: return True
+
+                if csv_model == model_name_clean:
+                    return True
+
+                if (brand_clean + " " + csv_model) == model_name_clean:
+                    return True
+
+                if (
+                    brand_clean == "motorola"
+                    and ("moto " + csv_model) == model_name_clean
+                ):
+                    return True
+
                 return False
 
             model_variants = variants_df[
-                (variants_df["brand_clean"] == brand_clean) &
-                (variants_df["model_clean"].apply(is_match))
+                (variants_df["brand_clean"] == brand_clean)
+                & (variants_df["model_clean"].apply(is_match))
             ]
 
-
-
-            ram_options = sorted(model_variants["ram"].unique()) if not model_variants.empty else [2, 4, 6, 8, 12, 16]
-
-            ram = st.selectbox(
-                "RAM (GB)",
-                options=ram_options
+            ram_options = (
+                sorted(model_variants["ram"].unique())
+                if not model_variants.empty
+                else [2, 4, 6, 8, 12, 16]
             )
 
-            storage_options = sorted(
-                model_variants[
-                    model_variants["ram"] == ram
-                ]["rom"].unique()
-            ) if not model_variants.empty else [32, 64, 128, 256, 512]
+            ram = st.selectbox("RAM (GB)", options=ram_options)
 
-            storage = st.selectbox(
-                "Storage (GB)",
-                options=storage_options
+            storage_options = (
+                sorted(model_variants[model_variants["ram"] == ram]["rom"].unique())
+                if not model_variants.empty
+                else [32, 64, 128, 256, 512]
             )
+
+            storage = st.selectbox("Storage (GB)", options=storage_options)
 
         with c2:
+
             age_months = st.slider("Phone Age (Months)", 1, 60, 12)
+
             battery = st.slider("Battery Health %", 50, 100, 90)
-        
+
         condition = st.selectbox("Visual Condition", options=conditions)
-    
-    predict_clicked = st.button("ANALYZE MARKET VALUE", type="primary", use_container_width=True)
+
+    predict_clicked = st.button(
+        "ANALYZE MARKET VALUE", type="primary", use_container_width=True
+    )
 
 
 with main_col2:
@@ -919,10 +1068,30 @@ with main_col2:
             "Analyzing resale trends...",
             "Evaluating current market demand...",
             "Generating smart estimate...",
-            "Calculating fair resale value..."
+            "Calculating fair resale value...",
         ]
         with st.spinner(random.choice(spinner_messages)):
-            launch_price = model_price_map.get(model_name, 25000)
+
+            matching_variant = variants_df[
+                (variants_df["brand_clean"] == brand_clean)
+                & (variants_df["model_clean"].apply(is_match))
+                & (variants_df["ram"] == ram)
+                & (variants_df["rom"] == storage)
+            ]
+
+            if (
+                not matching_variant.empty
+                and "launch_price" in matching_variant.columns
+            ):
+                variant_price = matching_variant.iloc[0]["launch_price"]
+
+                if pd.notna(variant_price):
+                    launch_price = float(variant_price)
+                else:
+                    launch_price = model_price_map.get(model_name, 25000)
+
+            else:
+                launch_price = model_price_map.get(model_name, 25000)
 
             price = predict_price(
                 model_obj=model_obj,
@@ -934,55 +1103,75 @@ with main_col2:
                 age_months=age_months,
                 battery_health=battery,
                 condition=condition,
-                launch_price=launch_price
+                launch_price=launch_price,
             )
-            
+
             low, high = price * 0.92, price * 1.08
-            
-            st.markdown(f"""
+
+            st.markdown(
+                f"""
 <div class="result-box">
 <div class="label-text">Current Market Value</div>
-<div class="price-value">₹{price:,.0f}</div>
-<div class="info-tag">Launch Price: ₹{launch_price:,.0f}</div>
+<div class="price-value">₹ {price:,.0f}</div>
+<div class="info-tag">Launch Price: ₹ {launch_price:,.0f}</div>
 <div class="info-tag">Retention: {price/launch_price*100:.1f}%</div>
 <p style="margin-top:1.2rem; opacity:0.6; font-size:0.95rem;">
-Suggested Range: <b>₹{low:,.0f} - ₹{high:,.0f}</b>
+Suggested Range: <b>₹ {low:,.0f} - ₹ {high:,.0f}</b>
 </p>
 </div>
-""", unsafe_allow_html=True)
+""",
+                unsafe_allow_html=True,
+            )
 
             res1, res2 = st.columns([1, 1.8])
             with res1:
-                img_url = fetch_phone_image(f"{brand} {model_name}")
+                query = f"{brand} {model_name} back of smartphone photo"
+                img_url = fetch_phone_image(query)
                 if img_url:
-                    st.markdown(f'<div class="phone-visual-card"><img src="{img_url}" style="width:100%; border-radius:16px;"></div>', unsafe_allow_html=True)
-                st.markdown(f"<p style='text-align:center; opacity:0.6; font-size:0.8rem;'>{model_name}</p>", unsafe_allow_html=True)
-            
+                    st.markdown(
+                        f'<div class="phone-visual-card"><img src="{img_url}" style="width:100%; border-radius:16px;"></div>',
+                        unsafe_allow_html=True,
+                    )
+                st.markdown(
+                    f"<p style='text-align:center; opacity:0.6; font-size:0.8rem;'>{model_name}</p>",
+                    unsafe_allow_html=True,
+                )
+
             with res2:
                 with st.container():
                     st.markdown("### 📈 Lifecycle Forecast")
                     # Calculate future values (4% monthly drop for mock forecast)
                     months_f = list(range(age_months, age_months + 25, 4))
-                    future_prices = [price * (0.96 ** (m - age_months)) for m in months_f]
-                    
+                    future_prices = [
+                        price * (0.96 ** (m - age_months)) for m in months_f
+                    ]
+
                     fig = create_styled_chart(months_f, future_prices)
-                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+                    st.plotly_chart(
+                        fig, use_container_width=True, config={"displayModeBar": False}
+                    )
                     st.caption("Forecasted market value over the next 24 months")
     else:
-        st.markdown("""
+        st.markdown(
+            """
         <div style="text-align:center; padding: 6rem 2rem; opacity:0.15;">
             <div style="font-size: 80px; text-shadow: 0 0 30px rgba(96, 165, 250, 1);">📈</div><br>
             <h3 style="margin-top:1.5rem;">Analytical Engine Idle</h3>
             <p>Select your hardware parameters to initiate resale forecasting.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
-st.markdown(f"""
+st.markdown(
+    f"""
 <div class="footer">
 Phone Resale Pro v1.0 • Smart Estimates Powered by 5K+ Market Records •
 Built by Sayak Bhattasali •
 <a href="https://github.com/sayakbhattasali" target="_blank">GitHub</a>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)

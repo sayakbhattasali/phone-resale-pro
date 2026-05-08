@@ -9,21 +9,19 @@ import os
 import numpy as np
 import joblib
 
-
 # ── Paths ──────────────────────────────────────────────────────────────────────
-BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "model.pkl")
-ENC_PATH   = os.path.join(BASE_DIR, "model", "encoders.pkl")
+ENC_PATH = os.path.join(BASE_DIR, "model", "encoders.pkl")
 
 
 def load_artifacts():
     """Load and return (model, encoders) from disk."""
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
-            f"Model not found at {MODEL_PATH}.\n"
-            "Please run:  python train_model.py"
+            f"Model not found at {MODEL_PATH}.\n" "Please run:  python train_model.py"
         )
-    model    = joblib.load(MODEL_PATH)
+    model = joblib.load(MODEL_PATH)
     encoders = joblib.load(ENC_PATH)
     return model, encoders
 
@@ -38,7 +36,7 @@ def predict_price(
     age_months: int,
     battery_health: int,
     condition: str,
-    launch_price: int
+    launch_price: int,
 ) -> float:
     """
     Predict the resale price (INR) for a used phone.
@@ -61,20 +59,48 @@ def predict_price(
     Predicted price in INR (float)
     """
     # Encode categoricals the same way as training
-    brand_enc     = encoders["brand"].transform([brand])[0]
-    model_enc     = encoders["model"].transform([model_name])[0]
+    try:
+        brand_enc = encoders["brand"].transform([brand])[0]
+    except ValueError:
+        known_brands = encoders["brand"].classes_
+
+        similar_brands = [
+            b
+            for b in known_brands
+            if brand.lower() in b.lower() or b.lower() in brand.lower()
+        ]
+
+        fallback_brand = similar_brands[0] if similar_brands else known_brands[0]
+
+        brand_enc = encoders["brand"].transform([fallback_brand])[0]
+
+    try:
+        model_enc = encoders["model"].transform([model_name])[0]
+    except ValueError:
+        # Fallback for unseen models
+        known_models = encoders["model"].classes_
+        similar_models = [
+            m for m in known_models if model_name.lower().split()[0] in m.lower()
+        ]
+        fallback_model = similar_models[0] if similar_models else known_models[0]
+        model_enc = encoders["model"].transform([fallback_model])[0]
+
     condition_enc = encoders["condition"].transform([condition])[0]
 
-    features = np.array([[
-        brand_enc,
-        model_enc,
-        ram_gb,
-        storage_gb,
-        age_months,
-        battery_health,
-        condition_enc,
-        launch_price
-    ]])
+    features = np.array(
+        [
+            [
+                brand_enc,
+                model_enc,
+                ram_gb,
+                storage_gb,
+                age_months,
+                battery_health,
+                condition_enc,
+                launch_price,
+            ]
+        ]
+    )
 
     price = model_obj.predict(features)[0]
 
@@ -127,7 +153,7 @@ def predict_price(
 
     # 6. Extra depreciation after 12 months
     if age_months > 12:
-        price *= (1 - (age_months - 12) * 0.005)   # 0.5% per month after 1 year
+        price *= 1 - (age_months - 12) * 0.005  # 0.5% per month after 1 year
 
     # 7. Prevent unrealistic overpricing vs launch price
     if age_months >= 12:
