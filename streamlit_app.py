@@ -670,8 +670,8 @@ def fetch_phone_image(brand: str, model: str) -> str:
                 images = data.get("images", [])
                 if images:
                     img_url = ""
-                    # Specific fix for iPhone 11 to filter out mockups and use trusted domains
-                    if brand_str.lower() == "apple" and model_str.lower() == "iphone 11":
+                    # Filter out mockups and use trusted domains for all iPhones
+                    if brand_str.lower() == "apple" and "iphone" in model_str.lower():
                         for img in images:
                             cand = img.get("imageUrl", "")
                             if cand and _is_trusted_url(cand):
