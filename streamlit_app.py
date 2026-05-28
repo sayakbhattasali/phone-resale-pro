@@ -15,9 +15,14 @@ import subprocess
 import random
 import base64
 import plotly.graph_objects as go
+import requests
+import urllib.parse  # Ensure this is here
+import re
 from dotenv import load_dotenv
-from groq import Groq
-from ddgs import DDGS
+try:
+    from ddgs import DDGS
+except ImportError:
+    DDGS = None
 
 # Make sure src/ is importable from anywhere
 sys.path.insert(0, os.path.dirname(__file__))
@@ -30,9 +35,8 @@ from predict import (
     get_known_models,
 )
 
-# ── Load API key from .env ─────────────────────────────────────────────────────
+# ── Load environment variables from .env ────────────────────────────────────────
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Phone Resale Pro", page_icon="📱", layout="wide")
@@ -571,24 +575,25 @@ color: #a78bfa;
 
 # ── Utilities ──────────────────────────────────────────────────────────────────
 
-# Trusted domains whose product images are always safe to display
+# Fetch your credentials from the .env file
+SERPER_API_KEY = os.getenv("SERPER_API_KEY")
+
+# In-memory cache to prevent redundant API calls
+_image_cache: dict = {}
+
 _TRUSTED_DOMAINS = {
-    # OEM official sites
     "gsmarena.com", "apple.com", "samsung.com", "oneplus.com", "google.com",
     "mi.com", "xiaomi.com", "store.google.com", "motorola.com", "nokia.com",
     "vivo.com", "oppo.com", "realme.com", "iqoo.com", "nothing.tech",
     "honor.com", "asus.com", "sony.com", "htc.com", "tcl.com",
-    # E-commerce
     "amazon.com", "amazon.in", "flipkart.com", "croma.com", "bestbuy.com",
     "reliancedigital.in", "vijaysales.com",
-    # Indian / global tech media
     "gadgets360.com", "91mobiles.com", "smartprix.com", "mysmartprice.com",
     "pricebaba.com", "fonearena.com", "gizmochina.com", "phoneradar.com",
     "digit.in", "techradar.com", "tomsguide.com", "cnet.com",
     "notebookcheck.net", "kimovil.com", "phonearena.com",
     "xda-developers.com", "androidauthority.com", "droidlife.com",
     "techadvisor.com", "pocket-lint.com", "indianexpress.com",
-    # CDN subdomains commonly used for product shots
     "cdn.mos.cms.futurecdn.net", "m-cdn.phonearena.com",
     "fdn.gsmarena.com", "fdn2.gsmarena.com",
     "images-na.ssl-images-amazon.com", "m.media-amazon.com",
@@ -596,14 +601,12 @@ _TRUSTED_DOMAINS = {
     "i.gadgets360cdn.com", "cdn.pocket-lint.com",
     "image.oppo.com", "image.realme.net",
     "static.tomsguide.com", "static.digit.in",
-    "i01.appmifile.com",  # Xiaomi global CDN
-    # Stock photo sites (common in search results for product images)
+    "i01.appmifile.com",
     "freepik.com", "img.freepik.com",
     "istockphoto.com", "media.istockphoto.com",
     "pngimg.com", "pngwing.com",
 }
 
-# URL path segments that indicate junk / unsafe content
 _BLOCKED_PATH_WORDS = frozenset([
     "forum", "thread", "leak", "attach", "avatar", "profile",
     "meme", "wallpaper", "thumbnail", "placeholder", "18+", "nsfw",
@@ -612,27 +615,22 @@ _BLOCKED_PATH_WORDS = frozenset([
 
 
 def _domain_of(url: str) -> str:
-    """Extract the root domain from a URL (lowercase)."""
     try:
         from urllib.parse import urlparse
         host = urlparse(url).hostname or ""
-        # Strip leading 'www.'
         return host.lower().removeprefix("www.")
     except Exception:
         return ""
 
 
 def _is_trusted_url(url: str) -> bool:
-    """Return True only if the URL is from a whitelisted domain AND has no blocked path words."""
     domain = _domain_of(url)
     if not domain:
         return False
-    # Check if the domain or any parent domain is in the trusted set
     parts = domain.split(".")
     for i in range(len(parts) - 1):
         candidate = ".".join(parts[i:])
         if candidate in _TRUSTED_DOMAINS:
-            # Domain is trusted – now check path safety
             path_lower = url.lower()
             if any(w in path_lower for w in _BLOCKED_PATH_WORDS):
                 return False
@@ -640,9 +638,73 @@ def _is_trusted_url(url: str) -> bool:
     return False
 
 
+@st.cache_data(show_spinner=False, ttl=3600)
+def fetch_phone_image(brand: str, model: str) -> str:
+    """Fetch an official product image URL with a multi-layered hybrid architecture:
+    
+    1. Try Serper.dev API (Bulletproof Google Image Search).
+    2. Fallback: Try DuckDuckGo Image Search (using ddgs) with premium brand filters.
+    3. Final Fallback: Return a premium glassmorphic vector SVG.
+    """
+    brand_str = str(brand).strip()
+    model_str = str(model).strip()
+    cache_key = f"{brand_str}|{model_str}".lower()
+
+    if cache_key in _image_cache:
+        return _image_cache[cache_key]
+
+    # Pipeline 1: Serper.dev Search (Primary)
+    if SERPER_API_KEY:
+        try:
+            import json
+            search_query = f"{brand_str} {model_str} smartphone official stock product shot transparent background"
+            url = "https://google.serper.dev/images"
+            payload = json.dumps({"q": search_query})
+            headers = {
+                'X-API-KEY': SERPER_API_KEY,
+                'Content-Type': 'application/json'
+            }
+            response = requests.request("POST", url, headers=headers, data=payload, timeout=4)
+            if response.status_code == 200:
+                data = response.json()
+                images = data.get("images", [])
+                if images:
+                    img_url = images[0].get("imageUrl", "")
+                    if img_url:
+                        _image_cache[cache_key] = img_url
+                        return img_url
+        except Exception:
+            pass
+
+    # Pipeline 2: DuckDuckGo Search (ddgs)
+    if DDGS is not None:
+        try:
+            ddg_query = f"{brand_str} {model_str} smartphone official product image white background"
+            with DDGS() as ddgs:
+                results = ddgs.images(ddg_query, max_results=10, safesearch="strict")
+                if results:
+                    # Look for trusted domains first
+                    for r in results:
+                        img_url = r.get("image", "")
+                        if img_url and _is_trusted_url(img_url):
+                            _image_cache[cache_key] = img_url
+                            return img_url
+                    # Otherwise, use the first result if available
+                    img_url = results[0].get("image", "")
+                    if img_url:
+                        _image_cache[cache_key] = img_url
+                        return img_url
+        except Exception:
+            pass
+
+    # Pipeline 3: Glassmorphism SVG fallback
+    svg = _generate_svg_placeholder(brand_str, model_str)
+    _image_cache[cache_key] = svg
+    return svg
+
+
 def _generate_svg_placeholder(brand: str, model: str) -> str:
     """Generate a premium dark-glassmorphism SVG data URI showing Brand + Model."""
-    # Escape HTML entities in text
     safe_brand = brand.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     safe_model = model.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     
@@ -676,142 +738,35 @@ def _generate_svg_placeholder(brand: str, model: str) -> str:
     </radialGradient>
   </defs>
 
-  <!-- Background -->
   <rect width="400" height="480" rx="28" fill="url(#bg)"/>
   <rect width="400" height="480" rx="28" fill="none" stroke="url(#border)" stroke-width="1.5"/>
-
-  <!-- Ambient orbs -->
   <circle cx="120" cy="120" r="160" fill="url(#orb1)"/>
   <circle cx="300" cy="380" r="120" fill="url(#orb2)"/>
-
-  <!-- Phone silhouette outline -->
-  <rect x="130" y="60" width="140" height="260" rx="18" fill="none"
-        stroke="rgba(139,92,246,0.25)" stroke-width="1.5" filter="url(#glow)"/>
+  <rect x="130" y="60" width="140" height="260" rx="18" fill="none" stroke="rgba(139,92,246,0.25)" stroke-width="1.5" filter="url(#glow)"/>
   <rect x="130" y="60" width="140" height="260" rx="18" fill="rgba(255,255,255,0.02)"/>
-  <!-- Camera dot -->
   <circle cx="200" cy="85" r="6" fill="none" stroke="rgba(139,92,246,0.35)" stroke-width="1"/>
-  <!-- Screen area -->
-  <rect x="140" y="100" width="120" height="190" rx="4" fill="rgba(139,92,246,0.04)"
-        stroke="rgba(139,92,246,0.1)" stroke-width="0.5"/>
-
-  <!-- Brand text -->
-  <text x="200" y="370" text-anchor="middle"
-        font-family="system-ui,-apple-system,sans-serif" font-weight="700"
-        font-size="22" fill="url(#accent)" letter-spacing="1">{safe_brand}</text>
-
-  <!-- Model text -->
-  <text x="200" y="405" text-anchor="middle"
-        font-family="system-ui,-apple-system,sans-serif" font-weight="400"
-        font-size="16" fill="#94a3b8" letter-spacing="0.5">{safe_model}</text>
-
-  <!-- Subtle tagline -->
-  <text x="200" y="448" text-anchor="middle"
-        font-family="system-ui,-apple-system,sans-serif" font-weight="300"
-        font-size="10" fill="rgba(148,163,184,0.4)" letter-spacing="2">IMAGE UNAVAILABLE</text>
+  <rect x="140" y="100" width="120" height="190" rx="4" fill="rgba(139,92,246,0.04)" stroke="rgba(139,92,246,0.1)" stroke-width="0.5"/>
+  <text x="200" y="370" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="700" font-size="22" fill="url(#accent)" letter-spacing="1">{safe_brand}</text>
+  <text x="200" y="405" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="400" font-size="16" fill="#94a3b8" letter-spacing="0.5">{safe_model}</text>
+  <text x="200" y="448" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="300" font-size="10" fill="rgba(148,163,184,0.4)" letter-spacing="2">IMAGE PLACEHOLDER</text>
 </svg>'''
 
     encoded = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
     return f"data:image/svg+xml;base64,{encoded}"
 
 
-def _fetch_wiki_image(brand: str, model: str) -> str:
-    """Fallback to Wikimedia Commons/Wikipedia API for phone images (cloud safe)."""
-    try:
-        import requests
-        search_term = f"{brand} {model} smartphone"
-        url = "https://en.wikipedia.org/w/api.php"
-        params = {
-            "action": "query",
-            "generator": "search",
-            "gsrsearch": search_term,
-            "gsrlimit": 1,
-            "prop": "pageimages",
-            "format": "json",
-            "pithumbsize": 600
-        }
-        headers = {"User-Agent": "PhoneResalePro/1.0 (sayakbhattasali8@gmail.com)"}
-        res = requests.get(url, params=params, headers=headers, timeout=5).json()
-        pages = res.get("query", {}).get("pages", {})
-        for _, page_data in pages.items():
-            if "thumbnail" in page_data:
-                return page_data["thumbnail"]["source"]
-    except Exception:
-        pass
-    return ""
-
-
-def fetch_phone_image(brand: str, model: str) -> str:
-    """Fetch a safe phone image URL from DuckDuckGo, or return an SVG placeholder.
-
-    Pipeline:
-      1. Search DDGS with strict safesearch + product-shot keywords
-      2. Loop results – accept ONLY URLs from whitelisted domains
-      3. If DDGS fails or is blocked -> fallback to Wikipedia API
-      4. If zero safe hits → return a premium SVG data URI (never None)
-
-    Returns:
-        str: Always a valid image src (either an HTTPS URL or a base64 SVG data URI).
-    """
-    search_query = f'{brand} {model} smartphone official product image white background'
-
-    try:
-        ddgs = DDGS()
-        results = None
-
-        # Robust call across ddgs / duckduckgo_search API variants
-        for call_style in ("query_kw", "keywords_kw", "positional"):
-            try:
-                if call_style == "query_kw":
-                    results = ddgs.images(
-                        query=search_query, max_results=10,
-                        safesearch="strict", layout="Square",
-                    )
-                elif call_style == "keywords_kw":
-                    results = ddgs.images(
-                        keywords=search_query, max_results=10,
-                        safesearch="strict", layout="Square",
-                    )
-                else:
-                    results = ddgs.images(
-                        search_query, max_results=10,
-                        safesearch="strict",
-                    )
-                break  # success – stop trying other call styles
-            except TypeError:
-                continue
-
-        if results:
-            for res in results:
-                img_url = res.get("image", "")
-                if not img_url or not img_url.startswith("http"):
-                    continue
-                if _is_trusted_url(img_url):
-                    return img_url
-
-    except Exception:
-        pass
-
-    # Fallback to Wikipedia API if DDGS yields nothing or is blocked (common on Cloud)
-    wiki_img = _fetch_wiki_image(brand, model)
-    if wiki_img:
-        return wiki_img
-
-    # All paths exhausted → generate premium SVG placeholder
-    return _generate_svg_placeholder(brand, model)
-
-
 def render_phone_visual(brand: str, model: str) -> str:
-    """Return the full HTML block to render the phone image card.
-
-    Works with both remote URLs and base64 SVG data URIs.
-    """
+    """Return the full HTML block to render the phone image card frame layout."""
     img_src = fetch_phone_image(brand, model)
+    is_svg = img_src.startswith("data:")
+    img_style = "width:100%; border-radius:16px;"
+    
+    # Standard security fallback: if an external site blocks cross-origin image requests
+    # it catches the error and breaks to a blank space gracefully instead of an ugly broken icon
+    onerror = "" if is_svg else " onerror=\"this.src='';this.style.display='none'\""
     return (
         f'<div class="phone-visual-card">'
-        f'<img src="{img_src}" '
-        f'style="width:100%; border-radius:16px;" '
-        f'alt="{brand} {model}" '
-        f'onerror="this.style.display=\'none\'">'
+        f'<img src="{img_src}" style="{img_style}" alt="{brand} {model}"{onerror}>'
         f'</div>'
     )
 

@@ -4,7 +4,6 @@ scikit-learn
 streamlit
 joblib
 google-generativeai
-groq
-ddgs
+requests
 python-dotenv
 plotly
