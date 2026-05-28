@@ -669,7 +669,24 @@ def fetch_phone_image(brand: str, model: str) -> str:
                 data = response.json()
                 images = data.get("images", [])
                 if images:
-                    img_url = images[0].get("imageUrl", "")
+                    img_url = ""
+                    # Specific fix for iPhone 11 to filter out mockups and use trusted domains
+                    if brand_str.lower() == "apple" and model_str.lower() == "iphone 11":
+                        for img in images:
+                            cand = img.get("imageUrl", "")
+                            if cand and _is_trusted_url(cand):
+                                img_url = cand
+                                break
+                        if not img_url:
+                            for img in images:
+                                cand = img.get("imageUrl", "")
+                                if cand and not any(w in cand.lower() for w in ["mockup", "template"]):
+                                    img_url = cand
+                                    break
+                    
+                    if not img_url:
+                        img_url = images[0].get("imageUrl", "")
+                        
                     if img_url:
                         _image_cache[cache_key] = img_url
                         return img_url
