@@ -570,16 +570,218 @@ color: #a78bfa;
 
 
 # ── Utilities ──────────────────────────────────────────────────────────────────
-def fetch_phone_image(query):
-    """Fetch phone image URL from DuckDuckGo."""
+
+# Trusted domains whose product images are always safe to display
+_TRUSTED_DOMAINS = {
+    # OEM official sites
+    "gsmarena.com", "apple.com", "samsung.com", "oneplus.com", "google.com",
+    "mi.com", "xiaomi.com", "store.google.com", "motorola.com", "nokia.com",
+    "vivo.com", "oppo.com", "realme.com", "iqoo.com", "nothing.tech",
+    "honor.com", "asus.com", "sony.com", "htc.com", "tcl.com",
+    # E-commerce
+    "amazon.com", "amazon.in", "flipkart.com", "croma.com", "bestbuy.com",
+    "reliancedigital.in", "vijaysales.com",
+    # Indian / global tech media
+    "gadgets360.com", "91mobiles.com", "smartprix.com", "mysmartprice.com",
+    "pricebaba.com", "fonearena.com", "gizmochina.com", "phoneradar.com",
+    "digit.in", "techradar.com", "tomsguide.com", "cnet.com",
+    "notebookcheck.net", "kimovil.com", "phonearena.com",
+    "xda-developers.com", "androidauthority.com", "droidlife.com",
+    "techadvisor.com", "pocket-lint.com", "indianexpress.com",
+    # CDN subdomains commonly used for product shots
+    "cdn.mos.cms.futurecdn.net", "m-cdn.phonearena.com",
+    "fdn.gsmarena.com", "fdn2.gsmarena.com",
+    "images-na.ssl-images-amazon.com", "m.media-amazon.com",
+    "rukminim1.flixcart.com", "rukminim2.flixcart.com",
+    "i.gadgets360cdn.com", "cdn.pocket-lint.com",
+    "image.oppo.com", "image.realme.net",
+    "static.tomsguide.com", "static.digit.in",
+    "i01.appmifile.com",  # Xiaomi global CDN
+    # Stock photo sites (common in search results for product images)
+    "freepik.com", "img.freepik.com",
+    "istockphoto.com", "media.istockphoto.com",
+    "pngimg.com", "pngwing.com",
+}
+
+# URL path segments that indicate junk / unsafe content
+_BLOCKED_PATH_WORDS = frozenset([
+    "forum", "thread", "leak", "attach", "avatar", "profile",
+    "meme", "wallpaper", "thumbnail", "placeholder", "18+", "nsfw",
+    "adult", "xxx", "porn", "nude", "sexy",
+])
+
+
+def _domain_of(url: str) -> str:
+    """Extract the root domain from a URL (lowercase)."""
+    try:
+        from urllib.parse import urlparse
+        host = urlparse(url).hostname or ""
+        # Strip leading 'www.'
+        return host.lower().removeprefix("www.")
+    except Exception:
+        return ""
+
+
+def _is_trusted_url(url: str) -> bool:
+    """Return True only if the URL is from a whitelisted domain AND has no blocked path words."""
+    domain = _domain_of(url)
+    if not domain:
+        return False
+    # Check if the domain or any parent domain is in the trusted set
+    parts = domain.split(".")
+    for i in range(len(parts) - 1):
+        candidate = ".".join(parts[i:])
+        if candidate in _TRUSTED_DOMAINS:
+            # Domain is trusted – now check path safety
+            path_lower = url.lower()
+            if any(w in path_lower for w in _BLOCKED_PATH_WORDS):
+                return False
+            return True
+    return False
+
+
+def _generate_svg_placeholder(brand: str, model: str) -> str:
+    """Generate a premium dark-glassmorphism SVG data URI showing Brand + Model."""
+    # Escape HTML entities in text
+    safe_brand = brand.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    safe_model = model.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="400" height="480">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c0e18"/>
+      <stop offset="50%" stop-color="#111327"/>
+      <stop offset="100%" stop-color="#0a0c14"/>
+    </linearGradient>
+    <linearGradient id="border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(139,92,246,0.6)"/>
+      <stop offset="50%" stop-color="rgba(99,102,241,0.25)"/>
+      <stop offset="100%" stop-color="rgba(96,165,250,0.4)"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="orb1" cx="30%" cy="25%">
+      <stop offset="0%" stop-color="rgba(139,92,246,0.15)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="75%" cy="80%">
+      <stop offset="0%" stop-color="rgba(96,165,250,0.10)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="480" rx="28" fill="url(#bg)"/>
+  <rect width="400" height="480" rx="28" fill="none" stroke="url(#border)" stroke-width="1.5"/>
+
+  <!-- Ambient orbs -->
+  <circle cx="120" cy="120" r="160" fill="url(#orb1)"/>
+  <circle cx="300" cy="380" r="120" fill="url(#orb2)"/>
+
+  <!-- Phone silhouette outline -->
+  <rect x="130" y="60" width="140" height="260" rx="18" fill="none"
+        stroke="rgba(139,92,246,0.25)" stroke-width="1.5" filter="url(#glow)"/>
+  <rect x="130" y="60" width="140" height="260" rx="18" fill="rgba(255,255,255,0.02)"/>
+  <!-- Camera dot -->
+  <circle cx="200" cy="85" r="6" fill="none" stroke="rgba(139,92,246,0.35)" stroke-width="1"/>
+  <!-- Screen area -->
+  <rect x="140" y="100" width="120" height="190" rx="4" fill="rgba(139,92,246,0.04)"
+        stroke="rgba(139,92,246,0.1)" stroke-width="0.5"/>
+
+  <!-- Brand text -->
+  <text x="200" y="370" text-anchor="middle"
+        font-family="system-ui,-apple-system,sans-serif" font-weight="700"
+        font-size="22" fill="url(#accent)" letter-spacing="1">{safe_brand}</text>
+
+  <!-- Model text -->
+  <text x="200" y="405" text-anchor="middle"
+        font-family="system-ui,-apple-system,sans-serif" font-weight="400"
+        font-size="16" fill="#94a3b8" letter-spacing="0.5">{safe_model}</text>
+
+  <!-- Subtle tagline -->
+  <text x="200" y="448" text-anchor="middle"
+        font-family="system-ui,-apple-system,sans-serif" font-weight="300"
+        font-size="10" fill="rgba(148,163,184,0.4)" letter-spacing="2">IMAGE UNAVAILABLE</text>
+</svg>'''
+
+    encoded = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
+    return f"data:image/svg+xml;base64,{encoded}"
+
+
+def fetch_phone_image(brand: str, model: str) -> str:
+    """Fetch a safe phone image URL from DuckDuckGo, or return an SVG placeholder.
+
+    Pipeline:
+      1. Search DDGS with strict safesearch + product-shot keywords
+      2. Loop results – accept ONLY URLs from whitelisted domains
+      3. If zero safe hits → return a premium SVG data URI (never None)
+
+    Returns:
+        str: Always a valid image src (either an HTTPS URL or a base64 SVG data URI).
+    """
+    search_query = f'{brand} {model} smartphone official product image white background'
+
     try:
         ddgs = DDGS()
-        results = ddgs.images(f"{query} phone official smartphone", max_results=3)
+        results = None
+
+        # Robust call across ddgs / duckduckgo_search API variants
+        for call_style in ("query_kw", "keywords_kw", "positional"):
+            try:
+                if call_style == "query_kw":
+                    results = ddgs.images(
+                        query=search_query, max_results=10,
+                        safesearch="strict", layout="Square",
+                    )
+                elif call_style == "keywords_kw":
+                    results = ddgs.images(
+                        keywords=search_query, max_results=10,
+                        safesearch="strict", layout="Square",
+                    )
+                else:
+                    results = ddgs.images(
+                        search_query, max_results=10,
+                        safesearch="strict",
+                    )
+                break  # success – stop trying other call styles
+            except TypeError:
+                continue
+
         if results:
-            return results[0]["image"]
+            for res in results:
+                img_url = res.get("image", "")
+                if not img_url or not img_url.startswith("http"):
+                    continue
+                if _is_trusted_url(img_url):
+                    return img_url
+
     except Exception:
         pass
-    return None
+
+    # All paths exhausted → generate premium SVG placeholder
+    return _generate_svg_placeholder(brand, model)
+
+
+def render_phone_visual(brand: str, model: str) -> str:
+    """Return the full HTML block to render the phone image card.
+
+    Works with both remote URLs and base64 SVG data URIs.
+    """
+    img_src = fetch_phone_image(brand, model)
+    return (
+        f'<div class="phone-visual-card">'
+        f'<img src="{img_src}" '
+        f'style="width:100%; border-radius:16px;" '
+        f'alt="{brand} {model}" '
+        f'onerror="this.style.display=\'none\'">'
+        f'</div>'
+    )
 
 
 def create_styled_chart(months, prices):
@@ -1125,13 +1327,10 @@ Suggested Range: <b>₹ {low:,.0f} - ₹ {high:,.0f}</b>
 
             res1, res2 = st.columns([1, 1.8])
             with res1:
-                query = f"{brand} {model_name} gsmarena official image"
-                img_url = fetch_phone_image(query)
-                if img_url:
-                    st.markdown(
-                        f'<div class="phone-visual-card"><img src="{img_url}" style="width:100%; border-radius:16px;"></div>',
-                        unsafe_allow_html=True,
-                    )
+                st.markdown(
+                    render_phone_visual(brand, model_name),
+                    unsafe_allow_html=True,
+                )
                 st.markdown(
                     f"<p style='text-align:center; opacity:0.6; font-size:0.8rem;'>{model_name}</p>",
                     unsafe_allow_html=True,
@@ -1175,3 +1374,4 @@ Built by Sayak Bhattasali •
 """,
     unsafe_allow_html=True,
 )
+
