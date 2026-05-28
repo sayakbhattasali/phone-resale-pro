@@ -650,6 +650,10 @@ def fetch_phone_image(brand: str, model: str) -> str:
     model_str = str(model).strip()
     cache_key = f"{brand_str}|{model_str}".lower()
 
+    # Explicit override for iPhone 12 Pro to guarantee a high-quality, verified transparent image
+    if brand_str.lower() == "apple" and model_str.lower() == "iphone 12 pro":
+        return "https://pngimg.com/uploads/iphone_12/iphone_12_PNG20.png"
+
     if cache_key in _image_cache:
         return _image_cache[cache_key]
 
