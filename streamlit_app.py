@@ -670,20 +670,20 @@ def fetch_phone_image(brand: str, model: str) -> str:
                 images = data.get("images", [])
                 if images:
                     img_url = ""
-                    # Filter out mockups and use trusted domains for all iPhones
-                    if brand_str.lower() == "apple" and "iphone" in model_str.lower():
+                    # First try to find a trusted URL
+                    for img in images:
+                        cand = img.get("imageUrl", "")
+                        if cand and _is_trusted_url(cand):
+                            img_url = cand
+                            break
+                    # If not found, filter out mockups and templates
+                    if not img_url:
                         for img in images:
                             cand = img.get("imageUrl", "")
-                            if cand and _is_trusted_url(cand):
+                            if cand and not any(w in cand.lower() for w in ["mockup", "template", "dummy"]):
                                 img_url = cand
                                 break
-                        if not img_url:
-                            for img in images:
-                                cand = img.get("imageUrl", "")
-                                if cand and not any(w in cand.lower() for w in ["mockup", "template"]):
-                                    img_url = cand
-                                    break
-                    
+                    # Fallback to first image
                     if not img_url:
                         img_url = images[0].get("imageUrl", "")
                         
@@ -700,14 +700,23 @@ def fetch_phone_image(brand: str, model: str) -> str:
             with DDGS() as ddgs:
                 results = ddgs.images(ddg_query, max_results=10, safesearch="strict")
                 if results:
+                    img_url = ""
                     # Look for trusted domains first
                     for r in results:
-                        img_url = r.get("image", "")
-                        if img_url and _is_trusted_url(img_url):
-                            _image_cache[cache_key] = img_url
-                            return img_url
+                        cand = r.get("image", "")
+                        if cand and _is_trusted_url(cand):
+                            img_url = cand
+                            break
+                    # If not found, filter out mockups and templates
+                    if not img_url:
+                        for r in results:
+                            cand = r.get("image", "")
+                            if cand and not any(w in cand.lower() for w in ["mockup", "template", "dummy"]):
+                                img_url = cand
+                                break
                     # Otherwise, use the first result if available
-                    img_url = results[0].get("image", "")
+                    if not img_url:
+                        img_url = results[0].get("image", "")
                     if img_url:
                         _image_cache[cache_key] = img_url
                         return img_url
