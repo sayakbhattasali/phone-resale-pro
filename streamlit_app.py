@@ -714,13 +714,40 @@ def _generate_svg_placeholder(brand: str, model: str) -> str:
     return f"data:image/svg+xml;base64,{encoded}"
 
 
+def _fetch_wiki_image(brand: str, model: str) -> str:
+    """Fallback to Wikimedia Commons/Wikipedia API for phone images (cloud safe)."""
+    try:
+        import requests
+        search_term = f"{brand} {model} smartphone"
+        url = "https://en.wikipedia.org/w/api.php"
+        params = {
+            "action": "query",
+            "generator": "search",
+            "gsrsearch": search_term,
+            "gsrlimit": 1,
+            "prop": "pageimages",
+            "format": "json",
+            "pithumbsize": 600
+        }
+        headers = {"User-Agent": "PhoneResalePro/1.0 (sayakbhattasali8@gmail.com)"}
+        res = requests.get(url, params=params, headers=headers, timeout=5).json()
+        pages = res.get("query", {}).get("pages", {})
+        for _, page_data in pages.items():
+            if "thumbnail" in page_data:
+                return page_data["thumbnail"]["source"]
+    except Exception:
+        pass
+    return ""
+
+
 def fetch_phone_image(brand: str, model: str) -> str:
     """Fetch a safe phone image URL from DuckDuckGo, or return an SVG placeholder.
 
     Pipeline:
       1. Search DDGS with strict safesearch + product-shot keywords
       2. Loop results – accept ONLY URLs from whitelisted domains
-      3. If zero safe hits → return a premium SVG data URI (never None)
+      3. If DDGS fails or is blocked -> fallback to Wikipedia API
+      4. If zero safe hits → return a premium SVG data URI (never None)
 
     Returns:
         str: Always a valid image src (either an HTTPS URL or a base64 SVG data URI).
@@ -763,6 +790,11 @@ def fetch_phone_image(brand: str, model: str) -> str:
 
     except Exception:
         pass
+
+    # Fallback to Wikipedia API if DDGS yields nothing or is blocked (common on Cloud)
+    wiki_img = _fetch_wiki_image(brand, model)
+    if wiki_img:
+        return wiki_img
 
     # All paths exhausted → generate premium SVG placeholder
     return _generate_svg_placeholder(brand, model)
