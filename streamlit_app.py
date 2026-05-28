@@ -299,9 +299,9 @@ st.markdown(
             max-width: 100% !important;
             flex: none !important;
         }}
-        .result-box {
+        .result-box {{
             margin: 0 auto 2rem auto !important;
-        }
+        }}
     }}
 
 
